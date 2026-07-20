@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todos</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="app-header">
+        <h1>Todos</h1>
+        <div id="user-badge" class="user-badge hidden">
+          <span id="user-email"></span>
+          <button id="logout-btn" class="btn btn-ghost">Log out</button>
+        </div>
+      </header>
+
+      <!-- Auth screen -->
+      <section id="auth-screen" class="card">
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="signup">Create account</button>
+          <button class="tab-btn" data-tab="signin">I have a user ID</button>
+        </div>
+
+        <form id="signup-form" class="tab-panel active">
+          <label>
+            Email
+            <input type="email" id="signup-email" required placeholder="you@example.com" />
+          </label>
+          <label>
+            Password
+            <input type="password" id="signup-password" required minlength="8" placeholder="At least 8 characters" />
+          </label>
+          <label>
+            Age <span class="optional">(optional)</span>
+            <input type="number" id="signup-age" min="0" max="120" placeholder="e.g. 25" />
+          </label>
+          <button type="submit" class="btn btn-primary">Create account</button>
+          <p class="hint">Your account ID will be saved in this browser so you can come back later.</p>
+        </form>
+
+        <form id="signin-form" class="tab-panel">
+          <label>
+            User ID
+            <input type="text" id="signin-id" required placeholder="paste your user id" />
+          </label>
+          <button type="submit" class="btn btn-primary">Continue</button>
+        </form>
+
+        <p id="auth-error" class="error hidden"></p>
+      </section>
+
+      <!-- Todos screen -->
+      <section id="todos-screen" class="hidden">
+        <form id="todo-form" class="todo-form">
+          <input type="text" id="todo-title" placeholder="What needs to be done?" required maxlength="500" />
+          <input type="text" id="todo-description" placeholder="Description (optional)" maxlength="1000" />
+          <button type="submit" class="btn btn-primary">Add</button>
+        </form>
+
+        <div class="toolbar">
+          <div class="filters" id="filters">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="active">Active</button>
+            <button class="filter-btn" data-filter="completed">Completed</button>
+          </div>
+          <span id="todo-count" class="todo-count"></span>
+        </div>
+
+        <ul id="todo-list" class="todo-list"></ul>
+
+        <p id="empty-state" class="empty-state hidden">No todos yet — add one above.</p>
+      </section>
+    </div>
+
+    <div id="toast" class="toast hidden"></div>
+
+    <script src="/app.js"></script>
+  </body>
+</html>
