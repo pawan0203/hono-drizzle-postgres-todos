@@ -6,7 +6,6 @@ services:
       - '5433:5432'
     environment:
       - POSTGRES_PASSWORD=password
-      - POSTGERS_USER=user
+      - POSTGRES_USER=user
       - POSTGRES_DB=todos
-
 
