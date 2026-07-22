@@ -63,10 +63,14 @@ app.post("/users", async (c) => {
     return c.json({ error: parsed.error }, 400);
   }
 
-  const { email, password, age } = parsed.body;
+  const { email, password, name, age } = parsed.body;
 
   if (typeof email !== "string" || !email.trim()) {
     return c.json({ error: "email is required" }, 400);
+  }
+
+  if (typeof name !== "string" || !name.trim()) {
+    return c.json({ error: "name is required" }, 400);
   }
 
   if (typeof password !== "string" || password.length < 8) {
@@ -87,12 +91,14 @@ app.post("/users", async (c) => {
       .insert(userTable)
       .values({
         email: email.trim().toLowerCase(),
+        name: name.trim(),
         hashPassword,
         age: age as number | undefined,
       })
       .returning({
         id: userTable.id,
         email: userTable.email,
+        name: userTable.name,
         age: userTable.age,
         createdAt: userTable.createdAt,
         updatedAt: userTable.updatedAt,
@@ -124,6 +130,7 @@ app.get("/users/:id", async (c) => {
     .select({
       id: userTable.id,
       email: userTable.email,
+      name: userTable.name,
       age: userTable.age,
       createdAt: userTable.createdAt,
       updatedAt: userTable.updatedAt,

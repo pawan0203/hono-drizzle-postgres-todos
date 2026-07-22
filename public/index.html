@@ -11,7 +11,7 @@
       <header class="app-header">
         <h1>Todos</h1>
         <div id="user-badge" class="user-badge hidden">
-          <span id="user-email"></span>
+          <span id="user-name"></span>
           <button id="logout-btn" class="btn btn-ghost">Log out</button>
         </div>
       </header>
@@ -24,6 +24,10 @@
         </div>
 
         <form id="signup-form" class="tab-panel active">
+          <label>
+            Name
+            <input type="text" id="signup-name" required maxlength="120" placeholder="Your name" />
+          </label>
           <label>
             Email
             <input type="email" id="signup-email" required placeholder="you@example.com" />
@@ -53,6 +57,17 @@
 
       <!-- Todos screen -->
       <section id="todos-screen" class="hidden">
+        <div class="account-card">
+          <div class="account-avatar" id="account-avatar"></div>
+          <div class="account-info">
+            <div class="account-name" id="account-name"></div>
+            <div class="account-id">
+              <span>ID: <code id="account-id"></code></span>
+              <button id="copy-id-btn" class="icon-btn" title="Copy user ID">⧉</button>
+            </div>
+          </div>
+        </div>
+
         <form id="todo-form" class="todo-form">
           <input type="text" id="todo-title" placeholder="What needs to be done?" required maxlength="500" />
           <input type="text" id="todo-description" placeholder="Description (optional)" maxlength="1000" />

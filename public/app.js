@@ -1,6 +1,7 @@
 const state = {
   userId: localStorage.getItem("todos:userId") || null,
   userEmail: localStorage.getItem("todos:userEmail") || "",
+  userName: localStorage.getItem("todos:userName") || "",
   todos: [],
   filter: "all",
 };
@@ -10,7 +11,10 @@ const el = (id) => document.getElementById(id);
 const authScreen = el("auth-screen");
 const todosScreen = el("todos-screen");
 const userBadge = el("user-badge");
-const userEmailEl = el("user-email");
+const userNameEl = el("user-name");
+const accountAvatar = el("account-avatar");
+const accountName = el("account-name");
+const accountId = el("account-id");
 const authError = el("auth-error");
 const todoList = el("todo-list");
 const emptyState = el("empty-state");
@@ -44,18 +48,22 @@ async function api(path, options = {}) {
   return data;
 }
 
-function setUser(id, email) {
+function setUser(id, email, name) {
   state.userId = id;
   state.userEmail = email || "";
+  state.userName = name || "";
   localStorage.setItem("todos:userId", id);
   localStorage.setItem("todos:userEmail", state.userEmail);
+  localStorage.setItem("todos:userName", state.userName);
 }
 
 function clearUser() {
   state.userId = null;
   state.userEmail = "";
+  state.userName = "";
   localStorage.removeItem("todos:userId");
   localStorage.removeItem("todos:userEmail");
+  localStorage.removeItem("todos:userName");
 }
 
 function showAuthScreen() {
@@ -68,8 +76,22 @@ function showTodosScreen() {
   authScreen.classList.add("hidden");
   todosScreen.classList.remove("hidden");
   userBadge.classList.remove("hidden");
-  userEmailEl.textContent = state.userEmail || state.userId;
+
+  const displayName = state.userName || state.userEmail || state.userId;
+  userNameEl.textContent = displayName;
+  accountName.textContent = displayName;
+  accountAvatar.textContent = displayName.trim().charAt(0).toUpperCase();
+  accountId.textContent = state.userId;
 }
+
+el("copy-id-btn").addEventListener("click", async () => {
+  try {
+    await navigator.clipboard.writeText(state.userId);
+    showToast("User ID copied");
+  } catch {
+    showToast("Could not copy user ID", true);
+  }
+});
 
 // --- Tabs ---
 document.querySelectorAll(".tab-btn").forEach((btn) => {
@@ -87,6 +109,7 @@ el("signup-form").addEventListener("submit", async (e) => {
   e.preventDefault();
   authError.classList.add("hidden");
 
+  const name = el("signup-name").value.trim();
   const email = el("signup-email").value.trim();
   const password = el("signup-password").value;
   const ageValue = el("signup-age").value;
@@ -95,13 +118,14 @@ el("signup-form").addEventListener("submit", async (e) => {
     const { user } = await api("/users", {
       method: "POST",
       body: JSON.stringify({
+        name,
         email,
         password,
         ...(ageValue ? { age: Number(ageValue) } : {}),
       }),
     });
 
-    setUser(user.id, user.email);
+    setUser(user.id, user.email, user.name);
     showTodosScreen();
     await loadTodos();
   } catch (err) {
@@ -118,7 +142,7 @@ el("signin-form").addEventListener("submit", async (e) => {
 
   try {
     const { user } = await api(`/users/${id}`);
-    setUser(user.id, user.email);
+    setUser(user.id, user.email, user.name);
     showTodosScreen();
     await loadTodos();
   } catch (err) {
@@ -339,7 +363,7 @@ function startEdit(li, todo) {
 
   try {
     const { user } = await api(`/users/${state.userId}`);
-    setUser(user.id, user.email);
+    setUser(user.id, user.email, user.name);
     showTodosScreen();
     await loadTodos();
   } catch {
